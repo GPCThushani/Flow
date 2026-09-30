@@ -1,35 +1,36 @@
-# Flow — Personal Expense Tracker
+# Flow - Personal Expense Tracker
 
 ## Overview
 
-**Flow** is a personal expense tracking mobile application built with **Flutter and Firebase**.
+**Flow** is a clean, minimal, and professional personal expense tracking mobile application built with **Flutter and Firebase**.
 
-The application allows users to securely manage their everyday expenses by creating an account, recording expenses, organizing them by category, reviewing their spending history, and understanding their monthly spending through summaries and visualizations.
+The application helps users manage their everyday expenses by creating an account, recording expenses, organizing spending by category, reviewing expense history, and viewing monthly spending summaries through clear visualizations.
 
-The project was developed as part of the **Flutter Developer Internship Practical Task at CyphLab**, with a focus on Flutter/Dart fundamentals, Firebase integration, clean code structure, responsive UI, form validation, error handling, and overall application usability.
+Flow was developed as part of the **Flutter Developer Internship Practical Task at CyphLab**, with a focus on Flutter/Dart fundamentals, Firebase integration, clean code structure, responsive UI, form validation, error handling, usability, and attention to detail.
 
+The project intentionally focuses on delivering a well-structured and usable core experience rather than adding unnecessary complexity.
 
 ---
 
-## Features
+## Core Features
 
-### Authentication
+### Authentication & User Management
 
-* User registration
+* User registration with email and password
 * Email/password login
-* Logout
-* Authentication state handling
+* Persistent authentication state handling
 * User-specific expense data
+* Secure logout functionality
+* Password validation and confirmation during registration
 
 ### Expense Management
 
-* Add new expenses
-* Edit existing expenses
-* Delete expenses
-* View expense details
-* Confirmation before deletion
+Flow provides complete CRUD functionality for expenses.
 
-### Expense Information
+* **Create** - Add new expenses
+* **Read** - View recorded expenses
+* **Update** - Edit existing expenses
+* **Delete** - Delete expenses with confirmation
 
 Each expense contains:
 
@@ -41,97 +42,82 @@ Each expense contains:
 
 ### Dashboard
 
-The home dashboard provides:
+The home dashboard provides a quick overview of spending.
 
-* Current month's total expenses
-* Monthly comparison
-* Category-wise spending overview
+* Monthly expense total
+* Month selection
+* Category-wise spending breakdown
+* Top spending category
 * Recent expenses
-* Quick access to add an expense
+* Visual spending chart
 
 ### Expense History
 
-Users can:
+Users can review and manage their complete expense history.
 
-* View all recorded expenses
-* Search expenses
+* Expenses grouped by date
+* Search by expense title or category
 * Filter by category
 * Filter by date
-* Open individual expense details
+* View individual expense details
+* Edit and delete existing expenses
 
 ### Monthly Summary
 
-The summary section provides:
+The summary section provides a visual overview of spending.
 
-* Monthly total spending
-* Category-wise spending
-* Simple expense visualization
-* Highest spending category
-* Monthly comparison
+* Monthly total
+* Category-wise breakdown
+* Spending chart
+* Top spending category
+* Month selection
 
 ### Application States
 
-Flow handles:
+Flow provides dedicated handling for different application states.
 
-* Loading states
-* Empty states
-* Error states
-* Retry actions
-* Form validation
-* Delete confirmation
+* **Loading** - Feedback while retrieving data
+* **Empty** - Guidance when no expenses exist
+* **Error** - User-friendly error messages and retry actions
+* **Validation** - Input validation before submitting forms
 
----
+### User Preferences
 
-## Screens
-
-The application includes the following main screens:
-
-1. Splash Screen
-2. Login
-3. Create Account
-4. Home / Dashboard
-5. Add Expense
-6. Edit Expense
-7. Expense History
-8. Expense Details
-9. Filter Expenses
-10. Monthly Summary
-11. Category Summary
-12. Search Results
-13. Empty State
-14. Loading State
-15. Error State
-16. Profile / Settings
+* Light theme
+* Dark theme
+* System default theme
+* Sri Lankan Rupee (LKR / Rs.) currency display
 
 ---
 
 ## UI & Design
 
-Flow follows a clean, minimal and professional design approach.
+Flow follows a clean, minimal, and professional visual design.
 
-### Color Palette
+The interface focuses on:
 
-| Purpose      | Color          |
-| ------------ | -------------- |
-| Primary      | Deep Green     |
-| Secondary    | Muted Green    |
-| Background   | Warm Off-White |
-| Surface      | White          |
-| Primary Text | Charcoal       |
-| Accent       | Soft Orange    |
-
-The interface intentionally avoids excessive visual effects and unnecessary decorative elements.
-
-The design focuses on:
-
-* Clear hierarchy
+* Clear visual hierarchy
 * Consistent spacing
 * Readable typography
 * Responsive layouts
 * Simple navigation
 * Meaningful icons
 * Clear feedback
-* Accessible interaction patterns
+* Consistent components
+* Minimal visual distractions
+
+The design intentionally avoids excessive animations, unnecessary decorative elements, and AI-themed visual elements.
+
+### Color Palette
+
+| Purpose    | Color              | Hex       |
+| ---------- | ------------------ | --------- |
+| Primary    | Deep Green         | `#1F3D32` |
+| Secondary  | Muted Green        | `#5F806F` |
+| Accent     | Soft Orange/Yellow | `#F4B400` |
+| Error      | Red                | `#FF5252` |
+| Background | Warm Off-White     | `#F8F9FA` |
+| Surface    | White              | `#FFFFFF` |
 
 ---
 
@@ -142,85 +128,87 @@ The design focuses on:
 * **Flutter**
 * **Dart**
 
-### Backend / Cloud
+### Backend & Cloud
 
 * **Firebase Authentication**
 * **Cloud Firestore**
 
+### State Management
+
+* **Provider**
+
+### Key Packages
+
+* `firebase_core` - Firebase initialization
+* `firebase_auth` - User authentication
+* `cloud_firestore` - Firestore database integration
+* `intl` - Date and formatting utilities
+* `fl_chart` - Expense data visualization
+* `provider` - Application state management
+
 ### Development Tools
 
-* Visual Studio Code / Android Studio
+* Visual Studio Code
 * Firebase Console
 * Git
 * GitHub
-* Android Emulator / Physical Android Device
+* FlutterFire CLI
 
-### Additional Packages
+### Platform
 
-The project may use packages such as:
-
-* `firebase_core`
-* `firebase_auth`
-* `cloud_firestore`
-* `intl`
-* `fl_chart`
-* `provider` / selected state-management solution
-
-> Package versions may change during development. Refer to `pubspec.yaml` for the exact versions used in the submitted project.
+* Android
 
 ---
 
 ## Application Architecture
 
-The application follows a feature-oriented structure to keep the code organized and maintainable.
+Flow follows a feature-oriented structure to keep the code organized, maintainable, and easy to understand.
 
 ```text
 lib/
-│
 ├── core/
-│   ├── constants/
 │   ├── theme/
-│   └── utils/
+│   │   └── app_theme.dart
+│   └── widgets/
+│       ├── state_widgets.dart
 │
 ├── models/
 │   └── expense.dart
 │
-├── services/
-│   └── firebase_service.dart
-│
-├── repositories/
-│   └── expense_repository.dart
+├── providers/
+│   ├── auth_provider.dart
+│   ├── expense_provider.dart
+│   └── theme_provider.dart
 │
 ├── features/
 │   ├── auth/
 │   │   ├── login/
 │   │   └── register/
 │   │
-│   ├── dashboard/
+│   ├── home/
+│   │   └── home_screen/
+│   │   └── main_screen/
 │   │
-│   ├── expenses/
-│   │   ├── history/
-│   │   ├── details/
-│   │   └── add_edit/
+│   ├── expense/
+│   │   ├── add_expense/
+│   │   └── expense_list/
 │   │
-│   └── summary/
-│
-├── widgets/
-│   ├── expense_card.dart
-│   ├── category_chip.dart
-│   ├── empty_state.dart
-│   └── loading_indicator.dart
+│   ├── summary/
+│   │   ├── category_summary/
+│   │   └── summary_screen/
+│   │
+│   └── more/
 │
 └── main.dart
 ```
 
-The exact structure may be adjusted during implementation based on the final application requirements.
+The architecture separates application state, data models, reusable UI components, and feature-specific screens.
 
 ---
 
 ## Firebase Architecture
 
-Flow uses Firebase to provide authentication and cloud-based expense storage.
+Flow uses **Firebase Authentication** for user accounts and **Cloud Firestore** for expense storage.
 
 ```text
                  Flutter Application
@@ -228,7 +216,7 @@ Flow uses Firebase to provide authentication and cloud-based expense storage.
                          ▼
               Firebase Authentication
                          │
-                     User ID
+                       User ID
                          │
                          ▼
                   Cloud Firestore
@@ -248,20 +236,16 @@ users
             ├── amount
             ├── category
             ├── date
-            ├── note
-            ├── createdAt
-            └── updatedAt
+            └── note
 ```
 
-Associating expenses with the authenticated user's ID ensures that users only access their own expense records.
+Expenses are stored under the authenticated user's ID so that the application can retrieve the appropriate user's records.
 
 ---
 
 ## Expense Categories
 
-The application uses predefined categories to make expense organization consistent.
-
-Example categories include:
+Flow uses predefined categories to keep expense organization simple and consistent.
 
 * Food
 * Transport
@@ -271,13 +255,11 @@ Example categories include:
 * Entertainment
 * Other
 
-The category system can be extended in the future if required.
-
 ---
 
-## Validation
+## Form Validation
 
-The expense form validates user input before submitting data.
+The application validates user input before saving an expense.
 
 Examples include:
 
@@ -286,63 +268,77 @@ Examples include:
 * Amount must be a valid positive number
 * Category must be selected
 * Date must be valid
+* Password fields must satisfy the required validation rules
+* Password confirmation must match during registration
 
 Optional notes can be left empty.
 
 ---
 
-## Error Handling
+## Loading, Empty & Error Handling
 
-Flow provides user-friendly feedback for common application states.
+Flow provides dedicated UI states instead of leaving users with blank screens when an operation is in progress or fails.
 
-### Loading
+### Loading State
 
-When expense data is being retrieved:
+Displayed while expense data is being retrieved.
 
-> Loading your expenses...
+```text
+Loading your expenses...
+```
 
-### Empty
+### Empty State
 
-When the user has no expenses:
+Displayed when a user has not recorded any expenses.
 
-> No expenses yet
-> Start tracking your spending by adding your first expense.
+```text
+No expenses yet
 
-### Error
+Start tracking your spending
+by adding your first expense.
 
-When data cannot be loaded:
+[ Add Expense ]
+```
 
-> Couldn't load your expenses
-> Please check your connection and try again.
+### Error State
 
-A retry action is provided where appropriate.
+Displayed when an operation fails.
+
+```text
+Couldn't load your expenses
+
+Please check your connection
+and try again.
+
+[ Retry ]
+```
 
 ---
 
 ## Navigation Flow
 
 ```text
-                    Splash
-                      │
-                      ▼
-              Authentication Check
-                 /            \
-                /              \
-        Not Authenticated     Authenticated
-              │                    │
-              ▼                    ▼
-            Login                Home
-              │                    │
-              ├── Create Account   ├── Expenses
-              │                    │     ├── Add
-              │                    │     ├── Details
-              │                    │     └── Edit
-              │                    │
-              │                    ├── Summary
-              │                    │
-              │                    └── Profile
-              │
-              └──────────────► Home
+                         Splash
+                           │
+                           ▼
+                  Authentication Check
+                     /             \
+                    /               \
+                   ▼                 ▼
+                 Login              Home
+                   │                  │
+             ┌─────┴─────┐           ├── Dashboard
+             │           │           │
+             ▼           ▼           ├── Expenses
+       Create Account  Forgot        │     ├── Add
+                       Password      │     ├── Details
+                                     │     └── Edit
+                                     │
+                                     ├── Summary
+                                     │
+                                     └── Settings
+                                           │
+                                           └── Logout
 ```
 
 ---
@@ -351,16 +347,16 @@ A retry action is provided where appropriate.
 
 ### Prerequisites
 
-Before running the project, make sure the following are installed:
+Make sure the following are installed:
 
 * Flutter SDK
 * Dart SDK
-* Android Studio or Visual Studio Code
-* Android Emulator or Android device
 * Git
+* Android Studio or Visual Studio Code
+* Android Emulator or physical Android device
 * A Firebase project
 
-Check your Flutter installation with:
+Verify the Flutter installation:
 
 ```bash
 flutter doctor
@@ -372,11 +368,6 @@ flutter doctor
 
 ```bash
 git clone https://github.com/GPCThushani/Flow.git
-```
-
-Navigate to the project:
-
-```bash
 cd Flow
 ```
 
@@ -392,120 +383,100 @@ flutter pub get
 
 ### 3. Configure Firebase
 
-Create a Firebase project through the Firebase Console.
-
-Enable:
+Create a Firebase project and enable:
 
 * Firebase Authentication
 * Email/Password Authentication
 * Cloud Firestore
 
-Connect the Flutter application to Firebase using the appropriate Firebase configuration.
-
-For FlutterFire CLI:
+Configure Firebase for the Flutter application using FlutterFire CLI:
 
 ```bash
 dart pub global activate flutterfire_cli
-```
-
-Then configure the project:
-
-```bash
 flutterfire configure
 ```
 
-This generates the Firebase configuration required by the application.
-
-> Firebase configuration files and sensitive credentials should not be committed if they contain information that should remain private.
+Follow the generated configuration for the target platform.
 
 ---
 
 ### 4. Run the Application
 
-Connect an Android device or start an emulator.
-
-Then run:
+Connect an Android device or start an emulator:
 
 ```bash
 flutter run
 ```
 
-For a release build:
+---
 
-```bash
-flutter build apk --release
-```
+## Requirements Coverage
+
+The following table maps Flow directly to the requirements provided in the CyphLab practical task.
+
+| CyphLab Requirement                               | Flow Implementation         |
+| ------------------------------------------------- | --------------------------- |
+| Add new expenses                                  | Add Expense Form            |
+| Edit existing expenses                            | Edit Expense Form           |
+| Delete expenses                                   | Delete with confirmation    |
+| Select expense category                           | Category selector           |
+| Store expenses using Firebase                     | Cloud Firestore             |
+| Display total expenses for current/selected month | Dashboard & Monthly Summary |
+| Expense history/list                              | Expense History             |
+| Filter by category                                | Category Filter             |
+| Filter by date                                    | Date Range Filter           |
+| Form validation                                   | Form validation             |
+| Loading state                                     | Loading State               |
+| Empty state                                       | Empty State                 |
+| Error state                                       | Error State + Retry         |
+| Title                                             | Expense field               |
+| Amount                                            | Expense field               |
+| Category                                          | Expense field               |
+| Date                                              | Expense field               |
+| Optional note/description                         | Expense field               |
+| Simple expense chart                              | `fl_chart` visualization    |
+| Monthly/category-wise summary                     | Monthly Summary             |
+| Search functionality                              | Expense Search              |
+| Firebase Authentication                           | Login & Create Account      |
 
 ---
 
-## Testing
+## Additional Features
 
-The application should be tested for:
+In addition to the required functionality, Flow includes:
 
-### Authentication
-
-* Create account
-* Login
-* Logout
-* Invalid credentials
-* Empty fields
-
-### Expense Management
-
-* Add expense
-* Edit expense
-* Delete expense
-* Cancel deletion
-* Invalid amount
-* Missing required fields
-
-### Filtering
-
-* Category filter
-* Date filter
-* Combined filters
-* Reset filters
-
-### Search
-
-* Search by expense title
-* Search with no matching results
-* Clear search
-
-### Firebase
-
-* Loading data
-* Saving data
-* Updating data
-* Deleting data
-* Handling connection errors
-
-### UI States
-
-* Loading
-* Empty
-* Error
-* Successful operations
+* Firebase Authentication
+* Monthly month selector
+* Monthly spending comparison
+* Category-wise spending analysis
+* Top spending category
+* Search functionality
+* Combined filtering
+* Expense details
+* Delete confirmation
+* Expense visualization
+* Theme switching
+* User-specific Firestore data
+* Responsive mobile interface
 
 ---
 
 ## AI Tools Used
 
-AI tools were used as development assistants throughout the project.
+AI tools were used as development assistants during the implementation of Flow.
 
 ### ChatGPT
 
 Used for:
 
-* Understanding and breaking down requirements
+* Breaking down the practical task requirements
+* Planning the application architecture
 * Flutter/Dart development assistance
-* Debugging and troubleshooting
 * Firebase implementation guidance
 * UI/UX planning
-* Code structure suggestions
-* Validation logic
-* README and documentation assistance
-* Reviewing implementation decisions
+* Debugging and troubleshooting
+* Validation and state-handling guidance
+* Documentation and README preparation
 
 ### GitHub Copilot
 
@@ -513,126 +484,131 @@ Used for:
 
 * Code completion
 * Boilerplate generation
-* Development productivity
 * Small implementation suggestions
+* Development productivity
 
 ### Responsible AI Usage
 
-AI-generated suggestions were not treated as final solutions automatically.
+AI-generated suggestions were reviewed and adapted before being incorporated into the project.
 
-The generated code and recommendations were:
+The development process involved:
 
-1. Reviewed
-2. Adapted to the project's requirements
-3. Tested locally
-4. Debugged when necessary
-5. Modified to fit the application's architecture and UI
+1. Understanding the generated suggestions
+2. Adapting code to the project's architecture
+3. Reviewing implementation details
+4. Testing functionality locally
+5. Debugging and modifying code where necessary
 
-The developer maintains an understanding of the submitted implementation and can explain the major design and technical decisions.
-
----
-
-## Requirements Coverage
-
-The following table maps the project to the practical task requirements.
-
-| CyphLab Requirement           | Flow Implementation      |
-| ----------------------------- | ------------------------ |
-| Add new expenses              | Add Expense              |
-| Edit existing expenses        | Edit Expense             |
-| Delete expenses               | Delete with confirmation |
-| Select expense category       | Category selector        |
-| Store expenses using Firebase | Cloud Firestore          |
-| Current month total           | Dashboard                |
-| Expense history/list          | Expense History          |
-| Filter by category            | Category filter          |
-| Filter by date                | Date filter              |
-| Form validation               | Validated expense form   |
-| Loading state                 | Loading UI               |
-| Empty state                   | Empty UI                 |
-| Error state                   | Error + Retry            |
-| Title                         | Expense field            |
-| Amount                        | Expense field            |
-| Category                      | Expense field            |
-| Date                          | Expense field            |
-| Optional note                 | Expense field            |
-| Expense chart                 | Monthly Summary          |
-| Monthly/category summary      | Summary screens          |
-| Search                        | Expense Search           |
-| Firebase Authentication       | Login / Create Account   |
+AI tools were used as development assistants rather than as a replacement for understanding the submitted implementation.
 
 ---
 
-## Additional Features
+## Testing Checklist
 
-Beyond the core requirements, Flow includes:
+The following areas were tested during development.
 
-* Firebase Authentication
-* Monthly spending comparison
-* Category-wise spending breakdown
-* Expense search
-* Combined filtering
-* Expense details
-* Delete confirmation
-* Simple expense visualization
-* User-specific Firestore data
-* Responsive mobile UI
-* Clear loading, empty and error states
+### Authentication
+
+* [ ] Account creation
+* [ ] Login
+* [ ] Logout
+* [ ] Invalid credentials
+* [ ] Empty field validation
+* [ ] Password validation
+
+### Expense Management
+
+* [ ] Add expense
+* [ ] View expense
+* [ ] Edit expense
+* [ ] Delete expense
+* [ ] Delete confirmation
+* [ ] Firestore persistence
+
+### Search & Filtering
+
+* [ ] Search by title
+* [ ] Search by category
+* [ ] Category filtering
+* [ ] Date filtering
+* [ ] Filter reset
+
+### Dashboard & Summary
+
+* [ ] Monthly total
+* [ ] Month selection
+* [ ] Category breakdown
+* [ ] Chart
+* [ ] Recent expenses
+
+### Application States
+
+* [ ] Loading state
+* [ ] Empty state
+* [ ] Error state
+* [ ] Retry functionality
+
+### UI
+
+* [ ] Responsive layout
+* [ ] Keyboard handling
+* [ ] Form scrolling
+* [ ] No text overflow
+* [ ] Consistent spacing
+* [ ] Light theme
+* [ ] Dark theme
+* [ ] System theme
 
 ---
 
-## Future Improvements
+## Submission Materials
 
-Possible future improvements include:
+### GitHub Repository
 
-* Budget limits
-* Recurring expenses
-* Export expenses to CSV/PDF
-* Multiple currencies
-* Custom categories
-* Notifications
-* Advanced financial reports
-* Offline-first synchronization
-* Dark mode
-
-These features are intentionally outside the initial scope to keep the application focused on the requirements of the practical task.
-
----
-
-## Demo
+**Repository:**
+https://github.com/GPCThushani/Flow
 
 ### Screen Recording
 
-**Google Drive / YouTube:**
-`[Add screen recording link here]`
-
-### APK
-
-**Release APK:**
-`[Add APK link here]`
-
----
-
-## Repository
-
-**GitHub:**
-`[Add repository URL here]`
+`https://drive.google.com/file/d/1Stls_kMhvKB6dDTYxp3gy4jXV17SApux/view?usp=sharing `
 
 ---
 
 ## Project Information
 
-**Project:** Flow - Personal Expense Tracker
-**Platform:** Android
-**Framework:** Flutter
-**Backend:** Firebase
-**Database:** Cloud Firestore
-**Authentication:** Firebase Authentication
+|                      |                                             |
+| -------------------- | ------------------------------------------- |
+| **Project**          | Flow - Personal Expense Tracker             |
+| **Purpose**          | Flutter Developer Internship Practical Task |
+| **Organization**     | CyphLab                                     |
+| **Framework**        | Flutter                                     |
+| **Language**         | Dart                                        |
+| **Authentication**   | Firebase Authentication                     |
+| **Database**         | Cloud Firestore                             |
+| **State Management** | Provider                                    |
+| **Platform**         | Android                                     |
+
+---
+
+## Future Improvements
+
+The following features could be considered for future versions:
+
+* Budget limits
+* Recurring expenses
+* Export expenses to CSV/PDF
+* Custom categories
+* Multiple currencies
+* Offline-first synchronization
+* Notifications
+* Advanced financial reports
+
+These features are outside the scope of the current practical task and were intentionally not prioritized over the required functionality.
 
 ---
 
 ## License
 
-This project was developed as part of a technical assessment and internship selection process.
+This project was developed as part of the **CyphLab Flutter Developer Internship Practical Task**.
 
 © 2026 Flow
