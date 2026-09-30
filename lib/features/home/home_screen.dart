@@ -13,7 +13,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
@@ -206,61 +205,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
       ),
-      
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigator.push(context, MaterialPageRoute(builder: (_) => const AddExpenseScreen()));
-        },
-        backgroundColor: primaryColor,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        height: 70,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                _buildNavItem(Icons.home, 'Home', 0, primaryColor),
-                _buildNavItem(Icons.account_balance_wallet, 'Expenses', 1, primaryColor),
-              ],
-            ),
-            Row(
-              children: [
-                _buildNavItem(Icons.pie_chart, 'Summary', 2, primaryColor),
-                _buildNavItem(Icons.more_horiz, 'More', 3, primaryColor),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, int index, Color primaryColor) {
-    final isSelected = _currentIndex == index;
-    return MaterialButton(
-      minWidth: 40,
-      onPressed: () => setState(() => _currentIndex = index),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isSelected ? primaryColor : Colors.grey, size: 24),
-          Text(
-            label, 
-            style: TextStyle(
-              color: isSelected ? primaryColor : Colors.grey, 
-              fontSize: 10,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal
-            )
-          ),
-        ],
-      ),
     );
   }
 }
+      
+     

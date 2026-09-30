@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:flow/features/home/home_screen.dart';
+import 'package:flow/features/home/main_screen.dart';
 import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
@@ -54,7 +54,7 @@ class AuthWrapper extends StatelessWidget {
     final authProvider = Provider.of<UserAuthProvider>(context);
 
     if (authProvider.isAuthenticated) {
-      return const HomeScreen(); // Fixed: Directly return HomeScreen
+      return const MainScreen();
     } else {
       return const SplashScreen(); 
     }
