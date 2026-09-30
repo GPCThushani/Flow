@@ -66,6 +66,14 @@ class UserAuthProvider with ChangeNotifier {
     }
   }
 
+  Future<void> resetPassword(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw 'Failed to send reset link. Please verify the email address.';
+    }
+  }
+
   Future<void> logout() async {
     await _authService.logout();
   }

@@ -25,8 +25,8 @@ class MoreScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             onPressed: () async {
-              Navigator.pop(ctx); // Close dialog
-              await authProvider.logout(); // Triggers app redirect
+              Navigator.pop(ctx);
+              await authProvider.logout(); 
             },
             child: const Text('Log Out'),
           ),
@@ -78,21 +78,20 @@ class MoreScreen extends StatelessWidget {
     final authProvider = Provider.of<UserAuthProvider>(context);
     final user = authProvider.user;
 
-    // Smart logic to get the display name, falling back to email prefix
-    String? displayName = 'My Account';
+    String displayName = 'My Account';
     if (user?.displayName != null && user!.displayName!.isNotEmpty) {
       displayName = user.displayName!;
     } else if (user?.email != null) {
-      displayName = user?.email!.split('@')[0];
+      displayName = user!.email!.split('@')[0];
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('More', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: false,
-        elevation: 20, // Thicker shadow!
+        elevation: 20, 
         // ignore: deprecated_member_use
-        shadowColor: Colors.black.withOpacity(0.5), // Darker shadow!
+        shadowColor: Colors.black.withOpacity(0.5), 
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -121,7 +120,7 @@ class MoreScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(displayName!, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      Text(displayName, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       Text(user?.email ?? '', style: const TextStyle(color: Colors.grey)),
                     ],
@@ -135,23 +134,28 @@ class MoreScreen extends StatelessWidget {
             const Text('Preferences', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey)),
             const SizedBox(height: 8),
             _buildListTile('Theme', 'Tap to change', onTap: () => _showThemeDialog(context)),
-            _buildListTile('Currency', 'LKR (Rs.)', onTap: () {}),
-            
-            const SizedBox(height: 24),
-            
-            // Data & Privacy
-            const Text('Data & Privacy', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey)),
-            const SizedBox(height: 8),
-            _buildListTile('Export Data', 'Save as CSV', onTap: () {}),
-            _buildListTile('Clear All Data', '', textColor: Colors.redAccent, onTap: () {}),
+            _buildListTile('Currency', 'LKR (Rs.)', onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Currency is set to Sri Lankan Rupees (Rs.) by default.'))
+              );
+            }),
             
             const SizedBox(height: 24),
             
             // App Info
             const Text('App', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey)),
             const SizedBox(height: 8),
-            _buildListTile('Help & Support', 'FAQ and Contact', onTap: () {}),
-            _buildListTile('About Flow', 'v1.0.0', onTap: () {}),
+            _buildListTile('About Flow', 'v1.0.0', onTap: () {
+              showAboutDialog(
+                context: context,
+                applicationName: 'Flow',
+                applicationVersion: '1.0.0',
+                applicationIcon: Image.asset('assets/images/logo.png', height: 40),
+                children: const [
+                  Text('A personal expense tracker built with Flutter and Firebase.'),
+                ]
+              );
+            }),
             
             const SizedBox(height: 40),
             
@@ -170,7 +174,6 @@ class MoreScreen extends StatelessWidget {
               ),
             ),
             
-            // This extra spacing ensures the logout button doesn't hide behind the floating + button!
             const SizedBox(height: 100), 
           ],
         ),
@@ -178,7 +181,6 @@ class MoreScreen extends StatelessWidget {
     );
   }
 
-  // Icons completely removed from this tile!
   Widget _buildListTile(String title, String subtitle, {Color? textColor, required VoidCallback onTap}) {
     return ListTile(
       contentPadding: EdgeInsets.zero,

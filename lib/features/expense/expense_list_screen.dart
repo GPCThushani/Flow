@@ -1,9 +1,9 @@
-import 'package:flow/features/expense/add_expense_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flow/models/expense.dart';
 import 'package:flow/providers/expense_provider.dart';
+import 'package:flow/features/expense/add_expense_screen.dart';
 
 class ExpenseListScreen extends StatefulWidget {
   const ExpenseListScreen({super.key});
@@ -81,7 +81,6 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     );
   }
 
- 
   void _showExpenseDetailPopup(BuildContext context, Expense expense) {
     final currencyFormat = NumberFormat.currency(symbol: 'Rs. ', decimalDigits: 2);
     final categoryColor = _getCategoryColor(expense.category);
@@ -97,21 +96,13 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(width: 48), 
                   CircleAvatar(
                     radius: 36,
                     // ignore: deprecated_member_use
                     backgroundColor: categoryColor.withOpacity(0.15),
                     child: Icon(_getCategoryIcon(expense.category), size: 36, color: categoryColor),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                    onPressed: () {
-                      Navigator.pop(ctx); 
-                      _confirmDelete(context, expense); 
-                    },
                   ),
                 ],
               ),
@@ -353,15 +344,15 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expenses', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        elevation: 35,
+        elevation: 16,
         // ignore: deprecated_member_use
         shadowColor: const Color(0xFF1F3D32).withOpacity(0.5),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xFF1F3D32), // Deep Green
-                Color(0xFF5F806F), // Muted Green
+                Color(0xFF1F3D32), 
+                Color(0xFF5F806F), 
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -372,7 +363,6 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Search Bar & Outlined Filter buttons matching the design
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Column(
@@ -397,25 +387,31 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
+                  // Updated Filter Controls
                   Row(
                     children: [
-                      OutlinedButton.icon(
-                        label: Text(_selectedCategory, style: const TextStyle(color: Colors.black87)),
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          side: BorderSide(color: Colors.grey.shade400),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.category_outlined, size: 16, color: Colors.black87),
+                          label: Text('Category: $_selectedCategory', style: const TextStyle(color: Colors.black87, fontSize: 13), overflow: TextOverflow.ellipsis),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            side: BorderSide(color: Colors.grey.shade400),
+                          ),
+                          onPressed: () => _openFilterBottomSheet(context),
                         ),
-                        onPressed: () => _openFilterBottomSheet(context),
                       ),
                       const SizedBox(width: 12),
-                      OutlinedButton.icon(
-                        icon: const Icon(Icons.calendar_today_outlined, size: 18, color: Colors.black87),
-                        label: Text(_selectedDateRange, style: const TextStyle(color: Colors.black87)),
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          side: BorderSide(color: Colors.grey.shade400),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.calendar_today_outlined, size: 16, color: Colors.black87),
+                          label: Text('Date: $_selectedDateRange', style: const TextStyle(color: Colors.black87, fontSize: 13), overflow: TextOverflow.ellipsis),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            side: BorderSide(color: Colors.grey.shade400),
+                          ),
+                          onPressed: () => _openFilterBottomSheet(context),
                         ),
-                        onPressed: () => _openFilterBottomSheet(context),
                       ),
                     ],
                   ),
@@ -424,7 +420,6 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
             ),
             const Divider(height: 1, color: Colors.black12),
 
-            // Expense List
             Expanded(
               child: filtered.isEmpty
                   ? const Center(
@@ -457,7 +452,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                               child: Column(
                                 children: items.map((expense) {
                                   return ListTile(
-                                    onTap: () => _showExpenseDetailPopup(context, expense), // Triggers the popup dialog
+                                    onTap: () => _showExpenseDetailPopup(context, expense), 
                                     leading: CircleAvatar(
                                       // ignore: deprecated_member_use
                                       backgroundColor: _getCategoryColor(expense.category).withOpacity(0.15),

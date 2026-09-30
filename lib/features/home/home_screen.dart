@@ -1,25 +1,34 @@
+import 'package:flow/core/theme/widgets/state_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flow/providers/auth_provider.dart';
 import 'package:flow/providers/expense_provider.dart';
-
+ 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
+ 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
+ 
 class _HomeScreenState extends State<HomeScreen> {
-  String _getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
+  DateTime _selectedMonth = DateTime.now();
+
+  void _changeMonth(int offset) {
+    setState(() {
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + offset);
+    });
   }
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
+ 
   String _getUserName(UserAuthProvider auth) {
     if (auth.user?.displayName != null && auth.user!.displayName!.isNotEmpty) {
       return auth.user!.displayName!;
@@ -27,10 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final email = auth.user?.email ?? 'User';
     return email.split('@')[0];
   }
-
+ 
   Color _getCategoryColor(String category) {
     switch (category.toLowerCase()) {
-      case 'food': return const Color(0xFFF4B400); 
+      case 'food': return const Color(0xFFF4B400);
       case 'transport': return const Color(0xFF5F806F); 
       case 'shopping': return const Color(0xFFE57373); 
       case 'bills': return const Color(0xFF64B5F6); 
@@ -39,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       default: return Colors.grey;
     }
   }
-
+ 
   IconData _getCategoryIcon(String category) {
     switch (category.toLowerCase()) {
       case 'food': return Icons.restaurant;
@@ -51,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       default: return Icons.category;
     }
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserAuthProvider>(context);
@@ -59,13 +68,38 @@ class _HomeScreenState extends State<HomeScreen> {
     final primaryColor = Theme.of(context).primaryColor;
     
     final currencyFormat = NumberFormat.currency(symbol: 'Rs. ', decimalDigits: 2);
-    final totalSpent = expenseProvider.currentMonthTotal;
-    final breakdown = expenseProvider.categoryBreakdown;
+    
+    // SAFE DYNAMIC FILTERING LOGIC
+    final currentMonthExpenses = expenseProvider.expenses.where((e) {
+      try {
+        return e.date.year == _selectedMonth.year && e.date.month == _selectedMonth.month;
+      } catch (error) {
+        return false; 
+      }
+    }).toList();
+    
+    // SAFE SORTING LOGIC
+    currentMonthExpenses.sort((a, b) {
+      try {
+        // ignore: unnecessary_null_comparison
+        return b.date.compareTo(a.date);
+      } catch (error) {
+        return 0;
+      }
+    });
 
+    // Calculate total and breakdown dynamically for the selected month
+    final totalSpent = currentMonthExpenses.fold(0.0, (sum, item) => sum + item.amount);
+
+    final Map<String, double> breakdown = {};
+    for (var exp in currentMonthExpenses) {
+      breakdown[exp.category] = (breakdown[exp.category] ?? 0) + exp.amount;
+    }
+ 
     return Scaffold(
       body: SafeArea(
         child: expenseProvider.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const LoadingStateWidget(message: 'Loading your dashboard...')
             : RefreshIndicator(
                 onRefresh: () async {
                   expenseProvider.updateUser(authProvider.user?.uid);
@@ -105,8 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-
-                      // Total Spending Card (Now with Gradient and Shadow)
+ 
+                      // Total Spending Card with Functional Month Selector
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(24),
@@ -129,11 +163,36 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'This Month',
-                              style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Total Spent',
+                                  style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
+                                ),
+                                // FUNCTIONAL MONTH SELECTOR
+                                Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () => _changeMonth(-1),
+                                      child: const Icon(Icons.chevron_left, color: Colors.white, size: 24),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      DateFormat('MMM yyyy').format(_selectedMonth),
+                                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    GestureDetector(
+                                      onTap: () => _changeMonth(1),
+                                      child: const Icon(Icons.chevron_right, color: Colors.white, size: 24),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 12),
                             Text(
                               currencyFormat.format(totalSpent),
                               style: const TextStyle(
@@ -147,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 32),
-
+ 
                       // Styled Chart Section (Side-by-side with Legend)
                       const Text('Spending by Category', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 16),
@@ -198,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: breakdown.entries.take(4).map((entry) { // Show top 4 in legend
+                                      children: breakdown.entries.take(4).map((entry) { 
                                         final percentage = totalSpent > 0 ? (entry.value / totalSpent) * 100 : 0;
                                         return Padding(
                                           padding: const EdgeInsets.only(bottom: 8.0),
@@ -227,37 +286,37 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                       ),
                       const SizedBox(height: 32),
-
-                      // Recent Expenses List (Styled as individual cards)
+ 
+                      // Recent Expenses Header
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Recent Expenses', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           TextButton(
-                            onPressed: () {
-                              // Switch to Expenses Tab (Index 1) using a small hack if needed, 
-                              // or just rely on the nav bar.
-                            }, 
+                            onPressed: () {}, 
                             child: Text('See All', style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600)),
                           )
                         ],
                       ),
                       const SizedBox(height: 8),
                       
-                      if (expenseProvider.expenses.isEmpty)
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(24.0),
-                            child: Text('No recent expenses', style: TextStyle(color: Colors.grey)),
-                          ),
+                      // Recent Expenses List OR Empty State
+                      if (currentMonthExpenses.isEmpty)
+                        EmptyStateWidget(
+                          title: 'No expenses yet',
+                          message: 'Start tracking your spending by adding your first expense.',
+                          buttonText: 'Add Expense',
+                          onAction: () {
+                            Navigator.pushNamed(context, '/add_expense');
+                          },
                         )
                       else
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: expenseProvider.expenses.length > 5 ? 5 : expenseProvider.expenses.length,
+                          itemCount: currentMonthExpenses.length > 5 ? 5 : currentMonthExpenses.length,
                           itemBuilder: (context, index) {
-                            final expense = expenseProvider.expenses[index];
+                            final expense = currentMonthExpenses[index];
                             return Card(
                               elevation: 0,
                               margin: const EdgeInsets.only(bottom: 12),
@@ -286,7 +345,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                         
-                      // Extra space at bottom to ensure the FAB doesn't cover the last item!
                       const SizedBox(height: 80),
                     ],
                   ),

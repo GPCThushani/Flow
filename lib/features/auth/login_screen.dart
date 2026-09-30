@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flow/providers/auth_provider.dart';
 import 'package:flow/features/auth/register_screen.dart'; 
-import 'package:flow/main.dart'; // Imported to access AuthWrapper
+import 'package:flow/main.dart'; 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -34,20 +34,81 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (success && mounted) {
-      // Clear the screen history and send the user directly to the Home/Auth logic
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const AuthWrapper()),
-        (route) => false, // This removes the back button so they can't go back to login
+        (route) => false, 
       );
     } else if (!success && mounted && authProvider.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(authProvider.errorMessage!),
+          content: Text(authProvider.errorMessage ?? 'Invalid email or password'),
           backgroundColor: Colors.redAccent,
         ),
       );
     }
+  }
+
+  void _showForgotPasswordDialog() {
+    final resetEmailController = TextEditingController(text: _emailController.text);
+    
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Reset Password', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Enter your email address and we will send you a secure link to reset your password.', style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: 16),
+            TextField(
+              controller: resetEmailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                hintText: 'you@example.com',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () async {
+              final email = resetEmailController.text.trim();
+              if (email.isEmpty || !email.contains('@')) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a valid email'), backgroundColor: Colors.redAccent));
+                return;
+              }
+              
+              Navigator.pop(ctx);
+              final authProvider = Provider.of<UserAuthProvider>(context, listen: false);
+              
+              try {
+                await authProvider.resetPassword(email);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password reset link sent! Check your email.'), backgroundColor: Colors.green));
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: Colors.redAccent));
+                }
+              }
+            },
+            child: const Text('Send Link'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -66,7 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Increased Logo size
                   Image.asset('assets/images/logo.png', height: 120),
                   const SizedBox(height: 24),
                   const Text(
@@ -81,24 +141,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 40),
+                  
                   const Text('Email', style: TextStyle(fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'you@example.com',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    validator: (value) => 
-                        value == null || value.isEmpty ? 'Please enter your email' : null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'Please enter your email';
+                      if (!value.contains('@')) return 'Please enter a valid email address';
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
+                  
                   const Text('Password', style: TextStyle(fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -107,35 +174,48 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                       ),
                     ),
-                    validator: (value) => 
-                        value == null || value.isEmpty ? 'Please enter your password' : null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return 'Password cannot be empty';
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 12),
+                  
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {}, 
-                      child: Text('Forgot password?', style: TextStyle(color: primaryColor)),
+                      onPressed: _showForgotPasswordDialog, 
+                      child: Text('Forgot password?', style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600)),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  authProvider.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : SizedBox(
-                          height: 56, // Increased button height
-                          child: ElevatedButton(
-                            onPressed: _handleLogin,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColor, // Forced correct color
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const Text('Login', style: TextStyle(fontSize: 16)),
-                          ),
+                  
+                  SizedBox(
+                    height: 56, 
+                    child: ElevatedButton(
+                      onPressed: authProvider.isLoading ? null : _handleLogin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: authProvider.isLoading ? Colors.grey.shade400 : primaryColor, 
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: Colors.grey.shade400,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                      ),
+                      child: authProvider.isLoading
+                          ? const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
+                                SizedBox(width: 12),
+                                Text('Logging in...', style: TextStyle(fontSize: 16, color: Colors.white)),
+                              ],
+                            )
+                          : const Text('Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
                   const SizedBox(height: 24),
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -147,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialPageRoute(builder: (_) => const RegisterScreen())
                           );
                         },
-                        child: Text('Create one', style: TextStyle(color: primaryColor)),
+                        child: Text('Create one', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),

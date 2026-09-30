@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flow/providers/expense_provider.dart';
-import 'package:flow/features/summary/category_summary_screen.dart'; // Ensure this is imported!
+import 'package:flow/features/summary/category_summary_screen.dart'; 
 
 class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
@@ -60,8 +60,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
           'Monthly Summary', 
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
         ),
-        centerTitle: false, // Aligned Left
-        elevation: 16, // Increased shadow height/depth
+        centerTitle: false, 
+        elevation: 16, 
         // ignore: deprecated_member_use
         shadowColor: const Color(0xFF1F3D32).withOpacity(0.7),
         flexibleSpace: Container(
@@ -194,7 +194,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 const Text('Top Spending Category', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
                 
-                // Made the top spending category card clickable too!
+                
                 InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () {
@@ -252,3 +252,4 @@ class _SummaryScreenState extends State<SummaryScreen> {
     );
   }
 }
+
