@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flow/features/home/home_screen.dart';
 import 'package:flow/features/expense/expense_list_screen.dart';
 import 'package:flow/features/expense/add_expense_screen.dart';
+import 'package:flow/features/summary/summary_screen.dart';
+import 'package:flow/features/settings/more_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,8 +19,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const ExpenseListScreen(),
-    const Center(child: Text('Summary Screen (Coming Next)')),
-    const Center(child: Text('More Screen (Coming Next)')),
+    const SummaryScreen(), 
+    const MoreScreen(),
   ];
 
   @override

@@ -353,11 +353,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expenses', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        elevation: 8,
+        elevation: 35,
         // ignore: deprecated_member_use
         shadowColor: const Color(0xFF1F3D32).withOpacity(0.5),
         flexibleSpace: Container(

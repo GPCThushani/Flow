@@ -7,6 +7,7 @@ import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/expense_provider.dart';
 import 'features/splash/splash_screen.dart';
+import 'package:flow/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,7 @@ void main() async {
             return expenseProvider!..updateUser(authProvider.user?.uid);
           },
         ),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const FlowApp(),
     ),
