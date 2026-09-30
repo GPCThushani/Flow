@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:flow/features/home/home_screen.dart';
 import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/expense_provider.dart';
+import 'features/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,17 +36,16 @@ class FlowApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flow — Personal Expense Tracker',
+      title: 'Flow | Personal Expense Tracker',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Automatically adapts to user's device setting
-      home: const AuthWrapper(),
+      themeMode: ThemeMode.system,
+      home: const AuthWrapper(), 
     );
   }
 }
 
-// Routes user to Dashboard if logged in, or Login screen if not
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -53,13 +54,9 @@ class AuthWrapper extends StatelessWidget {
     final authProvider = Provider.of<UserAuthProvider>(context);
 
     if (authProvider.isAuthenticated) {
-      return const Scaffold(
-        body: Center(child: Text('Home Dashboard (Coming Next)')),
-      );
+      return const HomeScreen(); // Fixed: Directly return HomeScreen
     } else {
-      return const Scaffold(
-        body: Center(child: Text('Login Screen (Coming Next)')),
-      );
+      return const SplashScreen(); 
     }
   }
 }
